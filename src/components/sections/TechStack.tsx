@@ -152,6 +152,7 @@ const TechStack = () => {
 
     return (
         <section
+            id="tech-stack"
             ref={sectionRef}
             className="relative w-full h-[80vh] bg-[#0a0a0a] overflow-hidden"
             style={{ touchAction: "none" }} // Allow canvas interaction dominance? No, "pan-y" is safer for scrolling, but user wants drag.

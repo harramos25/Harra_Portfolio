@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Space_Mono } from "next/font/google";
+import { Playfair_Display, Space_Mono, Sacramento } from "next/font/google";
 import "./globals.css";
 import NoiseOverlay from "@/components/ui/NoiseOverlay";
 
@@ -12,6 +12,12 @@ const spaceMono = Space_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
   weight: ["400", "700"],
+});
+
+const sacramento = Sacramento({
+  variable: "--font-signature",
+  weight: ["400"],
+  subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
@@ -27,7 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${playfair.variable} ${spaceMono.variable} antialiased bg-[#0a0a0a] text-[#e5e5e5]`}
+        className={`${playfair.variable} ${spaceMono.variable} ${sacramento.variable} antialiased bg-[#0a0a0a] text-[#e5e5e5]`}
       >
         <NoiseOverlay />
         <div className="fixed inset-0 z-0 pointer-events-none flex justify-between px-4 md:px-0 max-w-7xl mx-auto w-full opacity-10">

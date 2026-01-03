@@ -2,7 +2,7 @@
 
 export default function About() {
     return (
-        <section id="about" className="relative w-full min-h-screen flex flex-col md:flex-row bg-[#0a0a0a] text-[#e5e5e5]">
+        <section id="intro" className="relative w-full min-h-screen flex flex-col md:flex-row bg-[#0a0a0a] text-[#e5e5e5]">
 
             {/* LEFT COLUMN - THE STICKY IMAGE */}
             <div className="md:w-1/2 h-[50vh] md:h-screen md:sticky md:top-0 flex items-center justify-center p-0 border-r border-white/10 bg-black">
@@ -40,16 +40,29 @@ export default function About() {
                     I am a <strong className="text-white">Full Stack Web Developer</strong> and <strong className="text-white">UI/UX Designer</strong>. I build high-performance systems from wireframe to deployment.
                 </p>
 
-                {/* Statistic / Tech Detail */}
-                <div className="grid grid-cols-2 gap-8 pt-10 border-t border-white/10">
-                    <div>
-                        <h3 className="text-3xl font-serif-display">3+</h3>
-                        <p className="text-xs font-mono-tech text-zinc-500 uppercase mt-2">Years Experience</p>
+                {/* SIGNATURE BLOCK */}
+                <div className="pt-8 mt-12 border-t border-white/10 flex items-center justify-between">
+
+                    {/* Label */}
+                    <span className="font-mono-tech text-xs text-gray-500 tracking-widest uppercase">
+                        Digital Artisan
+                    </span>
+
+                    {/* The Signature */}
+                    <div className="relative pt-2">
+                        <h3 className="font-signature text-6xl md:text-8xl text-[#e5e5e5] -rotate-2 mr-4 opacity-90 tracking-wide">
+                            Harra Ramos
+                        </h3>
+
+                        {/* Optional: Add the "Digital Artisan" label next to it for contrast */}
+                        <span className="absolute -bottom-4 right-2 font-mono-tech text-[9px] text-[#FF331F] uppercase tracking-widest opacity-80">
+                            Signed ©26
+                        </span>
+
+                        {/* Optional: Add a subtle 'ink' glow behind it for depth */}
+                        <div className="absolute inset-0 blur-xl bg-white/10 -z-10 rounded-full"></div>
                     </div>
-                    <div>
-                        <h3 className="text-3xl font-serif-display">PH</h3>
-                        <p className="text-xs font-mono-tech text-zinc-500 uppercase mt-2">Based in Pagadian</p>
-                    </div>
+
                 </div>
             </div>
         </section>

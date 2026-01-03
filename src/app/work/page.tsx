@@ -1,155 +1,209 @@
 "use client";
-
-import { useState } from "react";
+import React, { useState, useMemo } from "react";
 import Navbar from "@/components/layout/Navbar";
-import { Button } from "@/components/ui/Button";
-import { Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const ALL_PROJECTS = [
-    { id: 1, title: "NCIP Job Portal", year: "2024", stack: "PHP", type: "System", image: "bg-zinc-800" },
-    { id: 2, title: "D'Marsians System", year: "2025", stack: "UI/UX", type: "System", image: "bg-zinc-800" },
-    { id: 3, title: "PawPointment", year: "2026", stack: "Mobile", type: "Mobile App", image: "bg-zinc-800" },
-    { id: 4, title: "FoodTrack", year: "2025", stack: "UI/UX", type: "Web App", image: "bg-zinc-800" },
-    { id: 5, title: "Portfolio V1", year: "2024", stack: "React", type: "Web App", image: "bg-zinc-800" },
-    { id: 6, title: "E-Commerce", year: "2026", stack: "Next.js", type: "Web App", image: "bg-zinc-800" },
+const allProjects = [
+    {
+        id: 1,
+        title: "NCIP Job Portal",
+        year: "2024",
+        role: "Full Stack",
+        stack: ["PHP", "MySQL", "System"],
+        image: "/images/ncip.png",
+        description: "Government recruitment automated filtering system.",
+    },
+    {
+        id: 2,
+        title: "D'Marsians System",
+        year: "2025",
+        role: "UI/UX & QA",
+        stack: ["Figma", "UI/UX", "System"],
+        image: "/images/dmars.png",
+        description: "Real-time student progress tracking dashboard.",
+    },
+    {
+        id: 3,
+        title: "FoodTrack Sales",
+        year: "2025",
+        role: "UI/UX",
+        stack: ["Figma", "UI/UX", "Mobile"],
+        image: "/images/foodtrack.png",
+        description: "Inventory sales management system.",
+    },
+    {
+        id: 4,
+        title: "PawPointment",
+        year: "2026",
+        role: "Mobile Dev",
+        stack: ["Flutter", "Mobile", "UI/UX"],
+        image: "/images/paw.png",
+        description: "Veterinary appointment scheduling application.",
+    },
 ];
 
-export default function WorkPage() {
-    const [filter, setFilter] = useState("All");
-    const [search, setSearch] = useState("");
-    const [selectedProject, setSelectedProject] = useState<any>(null);
+const WorkPage = () => {
+    const [activeYear, setActiveYear] = useState("All");
+    const [activeStack, setActiveStack] = useState("All");
+    const [searchQuery, setSearchQuery] = useState("");
 
-    const filteredProjects = ALL_PROJECTS.filter(p => {
-        const matchesFilter = filter === "All" || p.stack.includes(filter) || p.year === filter || p.type === filter;
-        const matchesSearch = p.title.toLowerCase().includes(search.toLowerCase());
-        return matchesFilter && matchesSearch;
-    });
+    const yearFilters = ["All", "2026", "2025", "2024"];
+    const stackFilters = ["All", "System", "Mobile", "React", "PHP", "UI/UX"];
+
+    const filteredProjects = useMemo(() => {
+        return allProjects.filter((project) => {
+            const matchesSearch = project.title.toLowerCase().includes(searchQuery.toLowerCase());
+            const matchesYear = activeYear === "All" || project.year === activeYear;
+            const matchesStack = activeStack === "All" ||
+                project.stack.some(s => s.includes(activeStack)) ||
+                project.stack.includes(activeStack);
+
+            return matchesSearch && matchesYear && matchesStack;
+        });
+    }, [activeYear, activeStack, searchQuery]);
 
     return (
-        <main className="bg-[#0a0a0a] min-h-screen text-[#e5e5e5]">
+        <div className="min-h-screen bg-[#0a0a0a] text-[#e5e5e5] selection:bg-[#FF331F] selection:text-black">
             <Navbar />
 
-            <div className="container mx-auto px-6 pt-32 pb-12">
-                <div className="border-b border-white/20 pb-8 mb-12 flex justify-between items-end">
-                    <h1 className="text-6xl md:text-8xl font-serif-display font-medium tracking-tighter mix-blend-difference">
-                        ARCHIVE
-                    </h1>
-                    <p className="font-mono-tech hidden md:block text-xs uppercase tracking-widest text-[#FF331F]">
-                        ( {filteredProjects.length} ) Projects Found
-                    </p>
-                </div>
+            {/* 1. MASTHEAD (Responsive Padding) */}
+            <div className="pt-28 md:pt-32 pb-8 px-6 md:px-12 border-b border-white/20">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
 
-                {/* Filters */}
-                <div className="flex flex-col md:flex-row gap-6 justify-between items-start md:items-center mb-12">
-                    <div className="relative w-full md:w-auto font-mono-tech">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
-                        <input
-                            type="text"
-                            placeholder="Search archives..."
-                            className="pl-10 pr-4 py-3 bg-transparent border-b border-white/20 focus:border-[#FF331F] w-full md:w-64 focus:outline-none transition-colors"
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                        />
+                    {/* Massive Title */}
+                    <div>
+                        <div className="flex items-center gap-4 mb-2">
+                            <span className="w-2 h-2 md:w-3 md:h-3 bg-[#FF331F] rounded-full"></span>
+                            <span className="font-mono-tech text-[10px] md:text-xs uppercase tracking-widest text-gray-500">
+                                Vol. 26 — Database
+                            </span>
+                        </div>
+                        {/* Responsive Text Size: 18vw on mobile, 10vw on desktop */}
+                        <h1 className="text-[18vw] md:text-[10vw] font-serif-display leading-[0.8] tracking-tighter mix-blend-difference uppercase">
+                            PROJECTS
+                        </h1>
                     </div>
 
-                    <div className="flex gap-2 flex-wrap font-mono-tech text-xs uppercase tracking-wider">
-                        {["All", "2026", "2025", "React", "PHP", "UI/UX", "Mobile", "System"].map((f) => (
-                            <button
-                                key={f}
-                                onClick={() => setFilter(f)}
-                                className={`px-4 py-2 border transition-colors ${filter === f ? "border-[#FF331F] text-[#FF331F]" : "border-white/20 text-zinc-500 hover:border-white"}`}
-                            >
-                                {f}
-                            </button>
-                        ))}
+                    {/* Description */}
+                    <div className="max-w-xs mb-1 md:mb-2 w-full md:w-auto">
+                        <p className="font-mono-tech text-[10px] md:text-xs text-gray-400 leading-relaxed uppercase text-left md:text-right">
+                            A collection of deployed systems, <br className="hidden md:block" />
+                            interfaces, and experiments. <br />
+                            <span className="text-[#FF331F]">
+                                {filteredProjects.length} Records Found
+                            </span>
+                        </p>
                     </div>
                 </div>
-
-                {/* Grid */}
-                <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
-                    <AnimatePresence>
-                        {filteredProjects.map((project) => (
-                            <motion.div
-                                layout
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                key={project.id}
-                                className="group cursor-pointer"
-                                onClick={() => setSelectedProject(project)}
-                            >
-                                <div className={`aspect-[4/5] mb-4 overflow-hidden relative  ${project.image} border border-white/10`}>
-                                    <div className="absolute inset-0 bg-[#FF331F]/0 group-hover:bg-[#FF331F]/10 transition-colors duration-500" />
-                                    {/* Placeholder for image */}
-                                    <div className="w-full h-full flex items-center justify-center font-serif-display text-4xl text-white/5 group-hover:text-white/20 transition-colors">
-                                        {project.title[0]}
-                                    </div>
-                                </div>
-                                <div className="border-t border-white/20 pt-4 flex justify-between items-start font-mono-tech text-xs uppercase tracking-wider">
-                                    <div>
-                                        <h3 className="text-sm font-bold text-[#e5e5e5] mb-1 group-hover:text-[#FF331F] transition-colors">{project.title}</h3>
-                                        <p className="text-zinc-500">{project.type}</p>
-                                    </div>
-                                    <span className="text-zinc-500">{project.year}</span>
-                                </div>
-                            </motion.div>
-                        ))}
-                    </AnimatePresence>
-                </motion.div>
             </div>
 
-            {/* Project Detail Overlay */}
-            <AnimatePresence>
-                {selectedProject && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[60] bg-black/95 flex items-center justify-center p-0 md:p-12"
-                        onClick={() => setSelectedProject(null)}
-                    >
-                        <div onClick={(e) => e.stopPropagation()} className="bg-[#0a0a0a] w-full h-full max-w-6xl md:border md:border-white/10 md:p-12 p-6 overflow-y-auto relative">
-                            <button onClick={() => setSelectedProject(null)} className="absolute top-6 right-6 font-mono-tech text-xs uppercase tracking-widest hover:text-[#FF331F]">
-                                [ Close ]
+            {/* 2. STICKY CONTROL BAR (Mobile Optimized - Two Rows) */}
+            <div className="sticky top-0 z-40 bg-[#0a0a0a]/90 backdrop-blur-md border-b border-white/20 shadow-xl shadow-black/20">
+
+                {/* ROW 1: Search + Year */}
+                <div className="flex flex-col md:flex-row border-b border-white/10">
+                    <div className="w-full md:w-1/3 border-b border-white/10 md:border-b-0 md:border-r border-white/20 p-4">
+                        <input
+                            type="text"
+                            placeholder="SEARCH PROJECTS..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full bg-transparent font-mono-tech text-xs uppercase tracking-widest focus:outline-none placeholder:text-gray-600 appearance-none rounded-none"
+                        />
+                    </div>
+                    <div className="w-full md:w-2/3 p-4 overflow-x-auto no-scrollbar flex items-center gap-6">
+                        <span className="font-mono-tech text-xs text-gray-600 uppercase shrink-0">Year:</span>
+                        {yearFilters.map((year) => (
+                            <button
+                                key={year}
+                                onClick={() => setActiveYear(year)}
+                                className={`
+                                    font-mono-tech text-[10px] md:text-xs uppercase tracking-widest transition-colors whitespace-nowrap shrink-0
+                                    ${activeYear === year ? "text-[#FF331F] underline decoration-[#FF331F] underline-offset-4" : "text-gray-500 hover:text-white"}
+                                `}
+                            >
+                                {year}
                             </button>
+                        ))}
+                    </div>
+                </div>
 
-                            <div className="grid md:grid-cols-2 gap-12 mt-12">
-                                <div>
-                                    <h2 className="text-5xl md:text-7xl font-serif-display mb-6 leading-[0.9]">{selectedProject.title}</h2>
+                {/* ROW 2: Stack */}
+                <div className="p-4 overflow-x-auto no-scrollbar flex items-center gap-6">
+                    <span className="font-mono-tech text-xs text-gray-600 uppercase shrink-0">Stack:</span>
+                    {stackFilters.map((stack) => (
+                        <button
+                            key={stack}
+                            onClick={() => setActiveStack(stack)}
+                            className={`
+                                font-mono-tech text-[10px] md:text-xs uppercase tracking-widest transition-colors whitespace-nowrap shrink-0
+                                ${activeStack === stack ? "text-[#FF331F] underline decoration-[#FF331F] underline-offset-4" : "text-gray-500 hover:text-white"}
+                            `}
+                        >
+                            {stack}
+                        </button>
+                    ))}
+                </div>
+            </div>
 
-                                    <div className="space-y-6 font-mono-tech text-xs uppercase tracking-widest text-zinc-500 border-t border-white/10 pt-6">
-                                        <div className="flex justify-between">
-                                            <span>Type</span>
-                                            <span className="text-[#e5e5e5]">{selectedProject.type}</span>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <span>Year</span>
-                                            <span className="text-[#e5e5e5]">{selectedProject.year}</span>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <span>Stack</span>
-                                            <span className="text-[#e5e5e5]">{selectedProject.stack}</span>
-                                        </div>
-                                    </div>
+            {/* 3. THE GRID (1 Column Mobile / 3 Columns Desktop) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border-b border-white/20">
+                <AnimatePresence mode="popLayout">
+                    {filteredProjects.map((project, index) => (
+                        <motion.div
+                            layout
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.3 }}
+                            key={project.id}
+                            className="group relative border-b md:border-b-0 border-white/20 md:border-r h-[45vh] md:h-[60vh] flex flex-col justify-between overflow-hidden cursor-pointer"
+                        >
 
-                                    <div className="mt-12 text-zinc-400 leading-relaxed max-w-md">
-                                        <p>Detailed project description goes here. Explain the challenge, the solution, and the impact.</p>
-                                    </div>
+                            {/* Header inside the box */}
+                            <div className="p-4 md:p-6 relative z-20 flex justify-between items-start mix-blend-difference">
+                                <span className="font-mono-tech text-xs text-gray-400">0{index + 1}</span>
+                                <span className="font-mono-tech text-[10px] md:text-xs text-[#FF331F] border border-[#FF331F] px-2 py-0.5 rounded-full">
+                                    {project.year}
+                                </span>
+                            </div>
 
-                                    <div className="mt-12">
-                                        <Button variant="secondary">View Live Project</Button>
-                                    </div>
-                                </div>
+                            {/* The Image (Background) */}
+                            <div className="absolute inset-0 z-0 bg-gray-900">
+                                <img
+                                    src={project.image}
+                                    alt={project.title}
+                                    className="w-full h-full object-cover opacity-60 grayscale group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
+                                />
+                                <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-all duration-500"></div>
+                            </div>
 
-                                <div className="h-[40vh] md:h-full bg-zinc-900 border border-white/5">
-                                    {/* Image placeholder */}
+                            {/* Footer Info */}
+                            <div className="relative z-20 p-4 md:p-6 bg-gradient-to-t from-black via-black/80 to-transparent md:translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                                <h2 className="font-serif-display text-3xl md:text-4xl text-white mb-2 leading-none">
+                                    {project.title}
+                                </h2>
+                                <div className="flex flex-wrap gap-x-3 md:gap-x-4 gap-y-2 font-mono-tech text-[10px] text-gray-400 uppercase tracking-widest">
+                                    <span>{project.role}</span>
+                                    <span className="text-[#FF331F]">//</span>
+                                    {project.stack.slice(0, 3).join(" + ")}
                                 </div>
                             </div>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-        </main>
+
+                        </motion.div>
+                    ))}
+                </AnimatePresence>
+            </div>
+
+            {/* 4. FOOTER MARKER */}
+            <div className="py-12 md:py-24 text-center">
+                <p className="font-mono-tech text-[10px] uppercase tracking-[0.5em] text-gray-600">
+                    End of Index
+                </p>
+            </div>
+
+        </div>
     );
-}
+};
+
+export default WorkPage;

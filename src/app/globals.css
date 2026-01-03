@@ -3,6 +3,7 @@
 @theme {
   --font-serif: var(--font-serif), system-ui, serif;
   --font-mono: var(--font-mono), monospace;
+  --font-signature: var(--font-signature), cursive;
 
   --color-background: #0a0a0a;
   --color-foreground: #e5e5e5;

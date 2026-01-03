@@ -128,17 +128,48 @@ const Hero = () => {
                 </h1>
             </div>
 
-            {/* 4. FOREGROUND INFO (Red Accent Lines) */}
+            {/* 4. FOREGROUND INFO & BUTTONS */}
             <div
                 ref={subTextRef}
-                className="absolute bottom-10 z-20 flex flex-col items-center"
+                className="absolute bottom-12 left-0 w-full z-30 flex flex-col items-center justify-center gap-6"
             >
-                <div className="flex justify-center items-center gap-4">
-                    <div className="h-[1px] w-12 bg-[#FF331F]"></div>
-                    <p className="font-mono-tech text-gray-400 text-xs md:text-sm tracking-[0.3em] uppercase text-center">
+
+                {/* The Subtitle */}
+                <div className="flex items-center gap-4 opacity-80 mb-2">
+                    <div className="h-[1px] w-8 bg-[#FF331F]"></div>
+                    <p className="font-mono-tech text-[10px] md:text-xs text-gray-300 tracking-[0.3em] uppercase text-center">
                         Full Stack Web Developer & <br className="md:hidden" /> UI/UX Designer
                     </p>
-                    <div className="h-[1px] w-12 bg-[#FF331F]"></div>
+                    <div className="h-[1px] w-8 bg-[#FF331F]"></div>
+                </div>
+
+                {/* --- THE NEW BUTTONS --- */}
+                <div className="flex flex-col md:flex-row items-center gap-6">
+
+                    {/* Button 1: SEE WORK (Primary) */}
+                    <button
+                        onClick={() => {
+                            const section = document.getElementById("selected-works");
+                            if (section) section.scrollIntoView({ behavior: "smooth" });
+                        }}
+                        className="group relative px-8 py-3 rounded-full border border-[#e5e5e5] overflow-hidden transition-all hover:scale-105 cursor-pointer"
+                    >
+                        <div className="absolute inset-0 bg-[#e5e5e5] translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"></div>
+                        <span className="relative z-10 font-mono-tech text-xs font-bold tracking-widest uppercase text-[#e5e5e5] group-hover:text-black transition-colors">
+                            See Work
+                        </span>
+                    </button>
+
+                    {/* Button 2: DOWNLOAD CV (Secondary) */}
+                    <a
+                        href="/documents/RAMOS - CV.pdf"
+                        download="Harra_Ramos_CV.pdf"
+                        className="group flex items-center gap-2 font-mono-tech text-xs font-bold tracking-widest uppercase text-gray-500 hover:text-white transition-colors duration-300"
+                    >
+                        <span>Download CV</span>
+                        <span className="group-hover:translate-y-1 transition-transform duration-300">↓</span>
+                    </a>
+
                 </div>
             </div>
 

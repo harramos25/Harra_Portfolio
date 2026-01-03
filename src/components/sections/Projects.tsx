@@ -6,7 +6,7 @@ import { ArrowUpRight } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const projects = [
+export const projects = [
     {
         title: "NCIP Job Portal",
         year: "2024",
@@ -38,30 +38,34 @@ const projects = [
 ];
 
 const Projects = () => {
-    const sectionRef = useRef(null);
-    const triggerRef = useRef(null);
+    const sectionRef = useRef<HTMLDivElement>(null);
+    const triggerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const section = sectionRef.current;
         const trigger = triggerRef.current;
 
-        // We have projects + 1 extra card (The "Your Project" CTA)
-        const totalSlides = projects.length + 1;
+        if (!section || !trigger) return;
 
-        if (!trigger || !section) return;
+        // Calculate exact width to scroll
+        // (Total Width of Horizontal Strip) - (Window Width)
+        const getScrollAmount = () => {
+            let races = section;
+            return -(races.scrollWidth - window.innerWidth);
+        };
 
         let ctx = gsap.context(() => {
 
-            const scrollTween = gsap.to(section, {
-                xPercent: -100 * (totalSlides - 1), // Move horizontally
-                ease: "none", // IMPORTANT: "none" ensures strictly linear movement
+            const tween = gsap.to(section, {
+                x: getScrollAmount, // Automatically calculates distance
+                ease: "none",
                 scrollTrigger: {
                     trigger: trigger,
-                    start: "top top", // Lock when the top of section hits top of screen
-                    end: "+=4000",    // Increase this number to make the scroll SLOWER/Longer
-                    pin: true,        // Pin the section in place
-                    scrub: 1,         // Smooth catch-up (1 second lag) - NOT auto-scroll
-                    // snap removed as requested
+                    start: "top top",
+                    end: () => `+=${Math.abs(getScrollAmount())}`, // Match scroll length to width
+                    pin: true,
+                    scrub: 1,
+                    invalidateOnRefresh: true, // Recalculate if window resizes
                 },
             });
 
@@ -78,27 +82,43 @@ const Projects = () => {
     };
 
     return (
-        <section id="projects" ref={triggerRef} className="relative overflow-hidden bg-[#0a0a0a]">
+        <section id="selected-works" ref={triggerRef} className="relative overflow-hidden bg-[#0a0a0a]">
 
-            {/* 1. THE HORIZONTAL STRIP */}
+            {/* THE HORIZONTAL STRIP */}
+            {/* We use w-fit so it stretches exactly as long as the content inside */}
             <div
                 ref={sectionRef}
-                className="flex h-screen"
-                style={{ width: `${(projects.length + 1) * 100}vw` }} // Dynamic Width
+                className="flex h-screen w-fit will-change-transform"
             >
 
-                {/* 2. PROJECT SLIDES */}
+                {/* --- SLIDE 1: INTRO TITLE (The Cover Page) --- */}
+                <div className="w-screen h-screen flex flex-col justify-center px-12 md:px-24 shrink-0 border-r border-white/5 bg-[#0a0a0a] relative">
+                    <span className="text-[#FF331F] font-mono-tech text-xs tracking-widest mb-4 uppercase">
+                        (2024 — 2026)
+                    </span>
+                    <h2 className="text-[12vw] font-serif-display leading-[0.8] text-[#e5e5e5] mb-8">
+                        SELECTED <br /> <span className="text-[#FF331F]">WORKS</span>
+                    </h2>
+                    <p className="text-gray-500 font-mono-tech text-sm max-w-md">
+                        A curated selection of systems, interfaces, and mobile experiences crafted with code and obsession.
+                    </p>
+                    <div className="mt-12 text-sm font-mono-tech text-gray-600">
+                        SCROLL TO EXPLORE &rarr;
+                    </div>
+                </div>
+
+                {/* --- SLIDES 2-5: THE PROJECTS --- */}
                 {projects.map((project, index) => (
                     <div
                         key={index}
-                        className="w-screen h-screen flex flex-col justify-center px-6 md:px-24 border-r border-white/5 relative bg-[#0a0a0a]"
+                        className="w-screen h-screen flex flex-col justify-center px-6 md:px-24 shrink-0 border-r border-white/5 bg-[#0a0a0a] relative"
                     >
                         {/* Background Number */}
                         <span className="absolute top-4 left-6 md:top-10 md:left-10 text-[15vw] font-serif-display text-white/5 z-0 leading-none select-none">
                             0{index + 1}
                         </span>
 
-                        <div className="relative z-10 w-full grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+                        <div className="relative z-10 w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
 
                             {/* Text Info */}
                             <div className="order-2 md:order-1">
@@ -124,33 +144,42 @@ const Projects = () => {
                             </div>
 
                             {/* Image Card */}
-                            <div className="order-1 md:order-2 h-[40vh] md:h-[60vh] w-full overflow-hidden bg-gray-900 rounded-lg relative">
+                            <div className="order-1 md:order-2 h-[40vh] md:h-[60vh] w-full overflow-hidden bg-gray-900 rounded-lg relative group">
                                 <img
                                     src={project.img}
                                     alt={project.title}
-                                    className="w-full h-full object-cover hover:scale-110 transition-transform duration-1000 ease-out"
+                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 ease-out will-change-transform"
                                 />
+                                {/* Subtle red tint on hover */}
+                                <div className="absolute inset-0 bg-[#FF331F] mix-blend-multiply opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
                             </div>
 
                         </div>
                     </div>
                 ))}
 
-                {/* 3. FINAL CARD: "START YOUR PROJECT" */}
-                <div className="w-screen h-screen flex items-center justify-center bg-[#FF331F] relative">
-                    <div className="text-center px-4">
-                        <h2 className="text-[12vw] md:text-[8vw] font-serif-display text-black leading-none mb-4">
-                            Your Project?
-                        </h2>
-                        <p className="text-black/80 font-mono-tech text-lg md:text-xl max-w-lg mx-auto mb-10">
-                            You've seen the archives. Let's build the future.
+                {/* --- FINAL SLIDE: THE "NEXT STEP" (Dark Editorial Version) --- */}
+                <div className="w-screen h-screen flex flex-col items-center justify-center shrink-0 bg-[#0a0a0a] relative border-l border-white/10">
+
+                    <div className="relative z-10 text-center">
+                        <p className="text-gray-500 font-mono-tech text-sm uppercase tracking-widest mb-6">
+                            What's Next?
                         </p>
+
+                        <h2 className="text-[10vw] font-serif-display leading-none text-white mb-8">
+                            YOUR <br /> PROJECT
+                        </h2>
 
                         <button
                             onClick={scrollToContact}
-                            className="px-10 py-5 bg-black text-white rounded-full text-sm md:text-base font-mono-tech uppercase tracking-widest hover:bg-white hover:text-black transition-colors duration-300"
+                            className="group relative px-12 py-6 bg-transparent border border-[#FF331F] overflow-hidden cursor-pointer"
                         >
-                            Start Collaboration
+                            {/* Button Hover Fill Effect */}
+                            <div className="absolute inset-0 w-full h-full bg-[#FF331F] translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"></div>
+
+                            <span className="relative z-10 font-mono-tech text-white uppercase tracking-widest group-hover:text-black transition-colors duration-300">
+                                Start Collaboration
+                            </span>
                         </button>
                     </div>
                 </div>
