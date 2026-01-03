@@ -2,6 +2,7 @@
 import React, { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ArrowUpRight } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -44,25 +45,23 @@ const Projects = () => {
         const section = sectionRef.current;
         const trigger = triggerRef.current;
 
-        // Calculate total width of the horizontal strip
-        // We have projects + 1 extra card (The "Your Project" CTA)
         // We have projects + 1 extra card (The "Your Project" CTA)
         const totalSlides = projects.length + 1;
 
-        if (!trigger) return;
+        if (!trigger || !section) return;
 
         let ctx = gsap.context(() => {
 
             const scrollTween = gsap.to(section, {
-                xPercent: -100 * (totalSlides - 1), // Move left by (total slides - 1 screens)
-                ease: "none",
+                xPercent: -100 * (totalSlides - 1), // Move horizontally
+                ease: "none", // IMPORTANT: "none" ensures strictly linear movement
                 scrollTrigger: {
                     trigger: trigger,
-                    start: "top top", // Snaps the top of the container to the top of screen
-                    end: "+=3000", // Makes the scroll area 3000px long (adjust for speed)
-                    pin: true,     // Locks the section in place
-                    scrub: 1,      // Smooth scrubbing
-                    snap: 1 / (totalSlides - 1), // Optional: Snaps to each slide
+                    start: "top top", // Lock when the top of section hits top of screen
+                    end: "+=4000",    // Increase this number to make the scroll SLOWER/Longer
+                    pin: true,        // Pin the section in place
+                    scrub: 1,         // Smooth catch-up (1 second lag) - NOT auto-scroll
+                    // snap removed as requested
                 },
             });
 
@@ -79,68 +78,79 @@ const Projects = () => {
     };
 
     return (
-        <section id="projects" ref={triggerRef} className="overflow-hidden bg-[#0a0a0a]">
-            {/* The Container that moves horizontally.
-         We set width to (100 * slides)% to fit them all side-by-side
-      */}
+        <section id="projects" ref={triggerRef} className="relative overflow-hidden bg-[#0a0a0a]">
+
+            {/* 1. THE HORIZONTAL STRIP */}
             <div
                 ref={sectionRef}
-                className="flex h-screen w-[500vw]" // 4 projects + 1 CTA = 500vw
+                className="flex h-screen"
+                style={{ width: `${(projects.length + 1) * 100}vw` }} // Dynamic Width
             >
 
-                {/* --- MAP THROUGH PROJECTS --- */}
+                {/* 2. PROJECT SLIDES */}
                 {projects.map((project, index) => (
                     <div
                         key={index}
-                        className="w-screen h-screen flex flex-col justify-center px-8 md:px-20 border-r border-white/5 relative"
+                        className="w-screen h-screen flex flex-col justify-center px-6 md:px-24 border-r border-white/5 relative bg-[#0a0a0a]"
                     >
                         {/* Background Number */}
-                        <span className="absolute top-10 left-10 text-[10vw] font-serif-display text-white/5 z-0">
+                        <span className="absolute top-4 left-6 md:top-10 md:left-10 text-[15vw] font-serif-display text-white/5 z-0 leading-none select-none">
                             0{index + 1}
                         </span>
 
-                        <div className="relative z-10 w-full max-w-4xl">
-                            <p className="text-[#FF331F] font-mono-tech text-sm tracking-widest mb-4 uppercase">
-                                {project.category} — {project.year}
-                            </p>
+                        <div className="relative z-10 w-full grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
 
-                            <h3 className="text-6xl md:text-8xl font-serif-display text-[#e5e5e5] mb-8 leading-none">
-                                {project.title}
-                            </h3>
+                            {/* Text Info */}
+                            <div className="order-2 md:order-1">
+                                <div className="flex items-center gap-4 mb-6">
+                                    <span className="px-3 py-1 border border-[#FF331F] text-[#FF331F] text-xs font-mono-tech uppercase rounded-full">
+                                        {project.category}
+                                    </span>
+                                    <span className="text-gray-500 font-mono-tech text-xs">{project.year}</span>
+                                </div>
 
-                            {/* Project Image Card */}
-                            <div className="w-full h-[40vh] md:h-[50vh] bg-gray-800 overflow-hidden relative group cursor-pointer">
+                                <h3 className="text-5xl md:text-7xl font-serif-display text-[#e5e5e5] mb-6 leading-[0.9]">
+                                    {project.title}
+                                </h3>
+
+                                <p className="text-gray-400 font-mono-tech text-sm max-w-md mb-8">
+                                    {project.description}
+                                </p>
+
+                                <button className="group flex items-center gap-2 text-white border-b border-transparent hover:border-white transition-all">
+                                    <span className="uppercase tracking-widest text-xs font-mono-tech">View Case Study</span>
+                                    <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+                                </button>
+                            </div>
+
+                            {/* Image Card */}
+                            <div className="order-1 md:order-2 h-[40vh] md:h-[60vh] w-full overflow-hidden bg-gray-900 rounded-lg relative">
                                 <img
                                     src={project.img}
                                     alt={project.title}
-                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                    className="w-full h-full object-cover hover:scale-110 transition-transform duration-1000 ease-out"
                                 />
-                                {/* Hover Overlay */}
-                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                                    <span className="px-6 py-3 border border-white text-white rounded-full font-mono-tech text-sm uppercase">
-                                        View Case Study
-                                    </span>
-                                </div>
                             </div>
+
                         </div>
                     </div>
                 ))}
 
-                {/* --- FINAL CARD: THE "YOUR PROJECT" CTA --- */}
+                {/* 3. FINAL CARD: "START YOUR PROJECT" */}
                 <div className="w-screen h-screen flex items-center justify-center bg-[#FF331F] relative">
-                    <div className="text-center">
-                        <h2 className="text-6xl md:text-9xl font-serif-display text-black mb-6">
+                    <div className="text-center px-4">
+                        <h2 className="text-[12vw] md:text-[8vw] font-serif-display text-black leading-none mb-4">
                             Your Project?
                         </h2>
-                        <p className="text-black/80 font-mono-tech text-xl max-w-md mx-auto mb-10">
-                            You've seen what I can build. Let's create the next big thing together.
+                        <p className="text-black/80 font-mono-tech text-lg md:text-xl max-w-lg mx-auto mb-10">
+                            You've seen the archives. Let's build the future.
                         </p>
 
                         <button
                             onClick={scrollToContact}
-                            className="px-12 py-6 bg-black text-white rounded-full text-lg font-mono-tech uppercase tracking-widest hover:scale-110 transition-transform duration-300"
+                            className="px-10 py-5 bg-black text-white rounded-full text-sm md:text-base font-mono-tech uppercase tracking-widest hover:bg-white hover:text-black transition-colors duration-300"
                         >
-                            Start Now
+                            Start Collaboration
                         </button>
                     </div>
                 </div>
