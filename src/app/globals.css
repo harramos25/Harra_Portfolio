@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: var(--font-serif), system-ui, serif;
+  --font-mono: var(--font-mono), monospace;
+
+  --color-background: #0a0a0a;
+  --color-foreground: #e5e5e5;
+
+  --color-ink: #0a0a0a;
+  --color-paper: #e5e5e5;
+  --color-vermilion: #FF331F;
+
+  --color-glass: rgba(255, 255, 255, 0.03);
+  --color-glass-border: rgba(255, 255, 255, 0.08);
+}
+
+.force-gpu {
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+:root {
+  --background: #0a0a0a;
+  --foreground: #e5e5e5;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-mono);
+  /* Default to mono for details */
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-serif);
+}
+
+.font-serif-display {
+  font-family: var(--font-serif);
+}
+
+.font-mono-tech {
+  font-family: var(--font-mono);
+}
+
+.glass-panel {
+  background: var(--color-glass);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--color-glass-border);
+}
+
+/* Vermilion cursor line if needed later, for now just utility classes */
+.text-vermilion {
+  color: var(--color-vermilion);
+}
+
+.bg-vermilion {
+  background-color: var(--color-vermilion);
+}
