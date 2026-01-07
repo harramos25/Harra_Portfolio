@@ -120,7 +120,7 @@ const TechStack = () => {
     // Full Icon Map
     const toolMap = {
         react: "/icons/react.png",
-        next: "/icons/next.png",
+        next: "/icons/react.png",
         ts: "/icons/ts.png",
         js: "/icons/html.png", // Fallback (Set)
         html: "/icons/html.png", // Set
@@ -163,11 +163,12 @@ const TechStack = () => {
             </div>
 
             <Canvas
+                legacy={true}
                 shadows
-                dpr={[1, 2]}
+                dpr={[1, 1.5]}
                 camera={{ position: [0, 0, 14], fov: 35 }}
                 style={{ pointerEvents: 'auto' }}
-                gl={{ powerPreference: "high-performance", alpha: true, antialias: true }}
+                gl={{ powerPreference: "high-performance", alpha: true, antialias: false, stencil: false, depth: false }}
                 onCreated={({ gl }) => {
                     gl.domElement.addEventListener('webglcontextlost', (e) => { e.preventDefault(); }, false);
                 }}

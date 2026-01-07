@@ -22,7 +22,6 @@ const Contact = () => {
 
     return (
         <section
-            id="contact"
             className="relative h-screen w-full bg-[#050505] flex flex-col justify-between overflow-hidden"
             style={{ zIndex: 0 }}
         >
